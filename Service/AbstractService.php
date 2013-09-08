@@ -3,20 +3,22 @@
 namespace BambooApiBundle\Service;
 
 use Guzzle\Http\Client;
+use Guzzle\Http\Exception\BadResponseException;
 
 /**
- * Base class that contain common features that is needed by other classes.
+ * Base class that contains common functionality for all services in the bundle.
  */
 abstract class AbstractService
 {
     /**
-     *
-     * @var Guzzle\Http\Client
+     * @var \Guzzle\Http\Client
      */
     protected $client;
 
     /**
      * Constructor.
+     *
+     * @param \Guzzle\Http\Client $client
      */
     public function __construct(Client $client)
     {
@@ -24,7 +26,7 @@ abstract class AbstractService
     }
 
     /**
-     * Creates and returns a Bamboo REST API compatible URL.
+     * Creates and returns a compatible URL.
      *
      * @param string $service
      * @param string $action
@@ -43,7 +45,7 @@ abstract class AbstractService
     }
 
     /**
-     * Retrieve response from Bamboo in JSON encoding for the given API call.
+     * Retrieve response from in JSON encoding for the given API call.
      *
      * @param string $url
      *
@@ -52,8 +54,14 @@ abstract class AbstractService
     protected function getResponseAsArray($url)
     {
         $request = $this->client->get($url);
+
         $request->setHeader('Accept', 'application/json');
-        $response = $request->send();
+
+        try {
+            $response = $request->send();
+        } catch (BadResponseException $e) {
+            return false;
+        }
 
         return $response->json();
     }

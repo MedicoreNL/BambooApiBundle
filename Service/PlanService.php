@@ -2,23 +2,11 @@
 
 namespace BambooApiBundle\Service;
 
-use Guzzle\Http\Client;
-
 /**
  * Service class for retrieving build plans from Bamboo.
  */
 class PlanService extends AbstractService
 {
-    /**
-     * Constructor.
-     *
-     * @param Guzzle\Http\Client $client
-     */
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
-    }
-
     /**
      * Returns an array of all plans defined in Bamboo.
      *
